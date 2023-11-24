@@ -3,12 +3,12 @@
 using namespace std;
 using namespace __gnu_pbds;
  
-// #define _GLIBCXX_DEBUG 1
-// #define _GLIBCXX_DEBUG_PEDANTIC 1
-// #pragma GCC optimize("trapv")
+#define _GLIBCXX_DEBUG 1
+#define _GLIBCXX_DEBUG_PEDANTIC 1
+#pragma GCC optimize("trapv")
 
-// #define dbg(TXTMSG) cerr << "\n" << TXTMSG
-// #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
+#define dbg(TXTMSG) cerr << "\n" << TXTMSG
+#define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
 
 #define ld long double
 #define int long long
@@ -43,20 +43,30 @@ void setIO(string name = ""){
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
-vvi graph;
 
-void dfs(int u, vi dist){
+vvi graph;
+vi dist;
+
+vi dt;
+
+void dfs(int u){
 	for(int x : graph[u]){
-		dist[x] = max(dist[x],dist[u] + 1);
-		dfs(x,dist);
+		dt[x] = max(dt[x],dt[u] + 1);
+		dfs(x);
 	}
 }
 
+bool comp(int &u, int &v){
+	return dist[u] > dist[v];
+}
+
 signed main(){
-	setIO("input");
-	int n,m;
-	cin >> n >> m;
+	auto begin = std::chrono::high_resolution_clock::now();
+	setIO();
+	int n,m,q;
+	cin >> n >> m >> q;
 	graph.resize(n);
+	dist.assign(n,-1);
 
 	int h = sqrt(n);
 
@@ -66,19 +76,101 @@ signed main(){
 		a--;
 		b--;
 
-		if(a > b){
-			swap(a,b);
-		}
-
-		graph[a].pb(b);
+		graph[b].pb(a);
 	}
 
-	vvi dp(n,vi(h,0));
-	vi dist(n,-1);
+	vvpii dp(n);
 
-	for(int i = n-2; i > -1; --i){
+	forn(i,n){
+		vi nodes;
+		dist[i] = 0;
+		nodes.pb(i);
+
+		vb used(n,false);
+
 		for(int x : graph[i]){
-			
+			for(pii j : dp[x]){
+				if(!used[j.f]){
+					used[j.f] = true;
+					nodes.pb(j.f);
+				}
+
+				dist[j.f] = max(dist[j.f],j.s+1);
+			}
+		}
+
+		sort(all(nodes),comp);
+		int t = 0;
+
+		for(int j : nodes){
+			if(t < h){
+				dp[i].pb({j,dist[j]});
+				dist[j] = 0;
+
+				t++;
+			}
+
+			else{
+				break;
+			}
 		}
 	}
+
+	
+	while(q--){
+		vb deleted(n,false);
+
+		int ind,del;
+		cin >> ind >> del;
+
+		ind--;
+
+		forn(i,del){
+			int a;
+			cin >> a;
+			a--;
+
+			deleted[a] = true;
+		}
+
+		if(del <= h){
+			int ans = -1;
+			int k = 0;
+
+			for(pii j : dp[ind]){
+				if(!deleted[j.f]){
+					ans = max(ans,j.s);
+					k++;
+				}
+
+				if(k > 0){
+					break;
+				}
+			}
+
+			cout << ans << endl;
+		}
+
+		else{
+			dt.assign(n,-1);
+
+			dt[ind] = 0;
+
+			dfs(ind);
+
+			int ans = -1;
+
+			forn(i,n){
+				if(!deleted[i]){
+					ans = max(ans,dt[i]);
+				}
+			}
+
+			cout << ans << endl;
+		}
+	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+    cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds.\n";
 }
