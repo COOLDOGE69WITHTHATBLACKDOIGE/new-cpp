@@ -3,12 +3,12 @@
 using namespace std;
 using namespace __gnu_pbds;
  
-// #define _GLIBCXX_DEBUG 1
-// #define _GLIBCXX_DEBUG_PEDANTIC 1
-// #pragma GCC optimize("trapv")
+#define _GLIBCXX_DEBUG 1
+#define _GLIBCXX_DEBUG_PEDANTIC 1
+#pragma GCC optimize("trapv")
 
-// #define dbg(TXTMSG) cerr << "\n" << TXTMSG
-// #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
+#define dbg(TXTMSG) cerr << "\n" << TXTMSG
+#define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
 
 #define ld long double
 #define int long long
@@ -102,6 +102,8 @@ signed main(){
 		}
 	}
 
+	math.clear();
+
 	psum[0] = a[0];
 
 	forrange(i,1,n){
@@ -113,12 +115,14 @@ signed main(){
 	u = psum;
 
 	sort(all(u));
+	int t = 1;
 
 	forn(i,n){
 		int g = u[i];
 
 		if(mp[g] == 0){
-			mp[g] = i+1;
+			mp[g] = t;
+			t++;
 		}
 
 		else{
@@ -126,19 +130,16 @@ signed main(){
 		}
 	}
 
-	vpii j(n);
+	vi j(n);
 
 	forn(i,n){
 		int index = mp[psum[i]] - 1;
 
-		j[i] = {psum[i],index};
-	}
+		j[i] = index;
 
-	u.clear();
-
-	forn(i,n){
 		int h = psum[i] - k;
 		int t = mp[h];
+
 		if(t == 0){
 			rival[i] = -1;
 		}
@@ -159,6 +160,7 @@ signed main(){
 		}
 	}
 
+	u.clear();
 	psum.clear();
 
 	int q;
@@ -185,13 +187,13 @@ signed main(){
 	vi ans(q);
 	int res = 0;
 
-	for(Query t : Q){
-		int l = t.left;
-		int r = t.right;
+	for(Query o : Q){
+		int l = o.left;
+		int r = o.right;
 
 		while(mo_right < r){
 			mo_right++;
-			occ[j[mo_right].s]++;
+			occ[j[mo_right]]++;
 
 			if(rival[mo_right] != -1){
 				res += occ[rival[mo_right]];
@@ -200,32 +202,40 @@ signed main(){
 
 		while(mo_left > l){
 			mo_left--;
-			occ[j[mo_left].s]++;
+			occ[j[mo_left]]++;
 
 			if(viral[mo_left] != -1){
 				res += occ[viral[mo_left]];
 			}
 		}
 
+		while(mo_left < l){
+			if(mo_left == -1){
+				mo_left++;
+				continue;
+			}
+
+			occ[j[mo_left]]--;
+
+			if(viral[mo_left] != -1){
+				res -= occ[viral[mo_left]];
+				dbgv(res);
+			}
+
+			mo_left++;
+		}
+
 		while(mo_right > r){
+			occ[mo_right]--;
+
 			if(rival[mo_right] != -1){
 				res -= occ[rival[mo_right]];
 			}
 
-			occ[j[mo_right].s]--;
 			mo_right--;
 		}
 
-		while(mo_left < l){
-			if(viral[mo_left] != -1){
-				res -= occ[viral[mo_left]];
-			}
-
-			occ[j[mo_left].s]--;
-			mo_left++;
-		}
-
-		ans[t.index] = res;
+		ans[o.index] = res;
 	}
 
 	forn(i,q){
