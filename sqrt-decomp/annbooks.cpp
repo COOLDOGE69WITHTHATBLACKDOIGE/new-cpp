@@ -66,62 +66,56 @@ signed main(){
 	int n,k;
 	cin >> n >> k;
 
-	vb math(n);
+	vb meth(n);
 	vi a(n);
-	vi psum(n);
-	vi rival(n);
-	vi viral(n);
-	vector<Query> Q;
+	vi v(n+1);
+	vi v1(n+1);
+	vi v2(n+1);
+	map<int,int> mp;
 
 	block_size = sqrt(n);
 
-	map<int,int> mp;
-
 	forn(i,n){
-		int a;
-		cin >> a;
-		if(a == 1){
-			math[i] = true; 
+		int h;
+		cin >> h;
+
+		if(h == 1){
+			meth[i] = true;
 		}
 
 		else{
-			math[i] = false;
+			meth[i] = false;
 		}
 	}
 
 	forn(i,n){
-		int j;
-		cin >> j;
+		int e;
+		cin >> e;
 
-		if(math[i]){
-			a[i] = j;
+		if(meth[i]){
+			a[i] = e;
 		}
 
 		else{
-			a[i] = -j;
+			a[i] = -e;
 		}
 	}
 
-	math.clear();
+	v[0] = 0;
 
-	psum[0] = a[0];
-
-	forrange(i,1,n){
-		psum[i] = psum[i-1]+a[i];
+	forrange(i,1,n+1){
+		v[i] = v[i-1] + a[i-1];
 	}
 
-	vi u(n);
-
-	u = psum;
-
+	vi u;
+	u = v;
 	sort(all(u));
+
 	int t = 1;
 
-	forn(i,n){
-		int g = u[i];
-
-		if(mp[g] == 0){
-			mp[g] = t;
+	for(int d : u){
+		if(mp[d] == 0){
+			mp[d] = t;
 			t++;
 		}
 
@@ -130,51 +124,36 @@ signed main(){
 		}
 	}
 
-	vi j(n);
+	vi j(n+1);
 
-	forn(i,n){
-		int index = mp[psum[i]] - 1;
+	forn(i,n+1){
+		int r = mp[v[i]];
+		r--;
 
-		j[i] = index;
+		j[i] = r;
 
-		int h = psum[i] - k;
-		int t = mp[h];
+		int g = mp[v[i] - k];
+		g--;
 
-		if(t == 0){
-			rival[i] = -1;
-		}
+		v1[i] = g;
 
-		else{
-			rival[i] = t-1;
-		}
+		g = mp[k - v[i]];
+		g--;
 
-		h = k - psum[i];
-		t  = mp[h];
-
-		if(t == 0){
-			viral[i] = -1;
-		}
-
-		else{
-			viral[i] = t-1;
-		}
+		v2[i] = g;
 	}
-
-	u.clear();
-	psum.clear();
 
 	int q;
 	cin >> q;
+
+	vector<Query> Q;
 
 	forn(i,q){
 		Query w;
 
 		cin >> w.left >> w.right;
-		w.left--;
-		w.right--;
 
 		w.index = i;
-
 		Q.pb(w);
 	}
 
@@ -183,11 +162,12 @@ signed main(){
 	int mo_left = -1;
 	int mo_right = -1;
 
-	vi occ(n);
+	vi occ(n+1);
 	vi ans(q);
 	int res = 0;
 
 	for(Query o : Q){
+		dbgv(o.index);
 		int l = o.left;
 		int r = o.right;
 
@@ -195,44 +175,48 @@ signed main(){
 			mo_right++;
 			occ[j[mo_right]]++;
 
-			if(rival[mo_right] != -1){
-				res += occ[rival[mo_right]];
+			if(v1[mo_right] != -1){
+				res += occ[v1[mo_right]];
 			}
+		}
+
+		while(mo_right > r){
+			if(v1[mo_right] != -1){
+				res -= occ[v1[mo_right]];
+			}
+
+			occ[j[mo_right]]--;
+			mo_right--;
 		}
 
 		while(mo_left > l){
 			mo_left--;
 			occ[j[mo_left]]++;
 
-			if(viral[mo_left] != -1){
-				res += occ[viral[mo_left]];
+			if(v2[mo_left] != -1){
+				res += occ[v2[mo_left]];
 			}
 		}
 
 		while(mo_left < l){
-			if(mo_left == -1){
+			if(mo_left == -1 || mo_left == 0){
 				mo_left++;
 				continue;
 			}
 
-			occ[j[mo_left]]--;
+			else{
+				if(v2[mo_left] != -1){
+					res -= occ[v2[mo_left-1]];
+					res -= occ[v2[mo_left]];
+				}
 
-			if(viral[mo_left] != -1){
-				res -= occ[viral[mo_left]];
-				dbgv(res);
+				occ[j[mo_left-1]]--;
+				mo_left++;
 			}
-
-			mo_left++;
 		}
 
-		while(mo_right > r){
-			occ[mo_right]--;
-
-			if(rival[mo_right] != -1){
-				res -= occ[rival[mo_right]];
-			}
-
-			mo_right--;
+		if(o.index == 2){
+			dbgv(occ[1]);
 		}
 
 		ans[o.index] = res;
