@@ -3,9 +3,6 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-#pragma GCC optimize("O3,unroll-loops")
-#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
- 
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
 // #pragma GCC optimize("trapv")
@@ -51,9 +48,7 @@ struct Point{
 	int next,steps,power;
 };
 
-vector<Point> a;
-
-signed main(){
+int32_t main(){
 	setIO();
 
 	int n,m;
