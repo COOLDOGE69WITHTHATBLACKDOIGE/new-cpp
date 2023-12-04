@@ -3,6 +3,7 @@
 using namespace std;
 using namespace __gnu_pbds;
 
+#pragma GCC optimize("O3")
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
 // #pragma GCC optimize("trapv")
