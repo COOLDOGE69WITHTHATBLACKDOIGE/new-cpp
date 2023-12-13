@@ -34,13 +34,6 @@ using namespace __gnu_pbds;
 
 #define MOD 1000000007
 
-void printvec(vi a){
-	forn(i,a.size()){
-		cerr << a[i] << " ";
-		cerr << endl;
-	}
-}
-
 void setIO(string name = ""){
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
@@ -51,77 +44,42 @@ void setIO(string name = ""){
 	}
 }
 
-struct Query{
-	int diameter,height,index;
-};
-
-bool comp(Query &a, Query &b){
-	if(a.diameter == b.diameter){
-		return a.height > b.height;
-	}
-
-	return a.diameter > b.diameter;
-}
-
-bool comp1(pii &a, pii &b){
-	if(a.f == b.f){
-		return a.s > b.s;
-	}
-
-	return a.f > b.f;
-}
-
 signed main(){
-	setIO("input");
-	int n,q;
-	cin >> n >> q;
+	setIO("hayfeast");
+	int n,m;
+	cin >> n >> m;
 
-	vpii a(n);
+	vi flav(n);
+	vi spicy(n);
 
 	forn(i,n){
-		cin >> a[i].f >> a[i].s;
+		cin >> flav[i] >> spicy[i];
 	}
 
-	vector<Query> Q(q);
+	multiset<int> s;
 
-	forn(i,q){
-		cin >> Q[i].diameter >> Q[i].height;
-		Q[i].index = i;
-	}
+	int r = -1;
+	int res = 0;
+	int mn = 1e17;
 
-	sort(all(Q),comp);
-	sort(all(a),comp1);
-
-	int j = 0;
-	vi dp;
-	vi ans(q);
-
-	forn(i,q){
-		while(j < n && a[j].f >= Q[i].diameter){
-			int ind = upper_bound(all(dp),-a[j].s) - dp.begin();
-
-			if(ind == dp.size()){
-				dp.pb(-a[j].s);
-			}
-
-			else{
-				dp[ind] = -a[j].s;
-			}
-
-			j++;
+	forn(i,n){
+		while(r < n && res < m){
+			r++;
+			res += flav[r];
+			s.insert(spicy[r]);
 		}
 
-		int d = upper_bound(all(dp),-Q[i].height) - dp.begin();
-		if(dp[d-1] == -Q[i].height){
-			ans[Q[i].index] = d-1;
+		if(res < m){
+			cout << mn << endl;
+			return 0;
 		}
-		
-		ans[Q[i].index] = dp.size() - d;	
+
+		else{
+			mn = min(mn,*s.rbegin());
+			s.erase(s.find(spicy[i]));
+			res -= flav[i];	
+		}
 	}
 
-	printvec(dp);
-
-	forn(i,q){
-		cout << ans[i] << endl;
-	}
+	cout << mn << endl;
 }
