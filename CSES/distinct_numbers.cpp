@@ -44,4 +44,26 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	sort(all(nums));
+	int t = 1;
+
+	forrange(i,1,n){
+		if(nums[i-1] == nums[i]){
+			continue;
+		}
+
+		t++;
+	}
+
+	cout << t << endl;
+}

@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
 using namespace std;
+#include<ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
  
 // #define _GLIBCXX_DEBUG 1
@@ -44,4 +44,41 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n,x;
+
+	cin >> n >> x;
+	vpii nums(n);
+
+	forn(i,n){
+		cin >> nums[i].f;
+		nums[i].s = i+1;
+	}
+
+	sort(all(nums));
+
+	forn(i,n){
+		int res = x - nums[i].f;
+
+		int l = 0;
+		int r = n-1;
+
+		while(l != r){
+			if(l != i && r != i && nums[l].f + nums[r].f  == res){
+				cout << nums[l].s << " " << nums[i].s << " " << nums[r].s << endl;
+				return 0;
+			}
+
+			if(nums[l].f + nums[r].f < res){
+				l++;
+			}
+
+			else{
+				r--;
+			}
+		}
+	}
+
+	cout << "IMPOSSIBLE" << endl;
+}

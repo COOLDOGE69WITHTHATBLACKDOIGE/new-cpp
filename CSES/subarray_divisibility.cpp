@@ -44,4 +44,39 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	vi pref(n+1,0);
+
+	forrange(i,1,n+1){
+		pref[i] = pref[i-1] + nums[i-1];
+	}
+
+	vi freq(n,0);
+	freq[0]++;
+	int res = 0;
+
+	forrange(i,1,n+1){
+		int t = pref[i]/n;
+		int rem = pref[i] - (t*n);
+
+		if(rem < 0){
+			rem += n;
+		}
+
+		res += freq[rem];
+
+		freq[rem]++;
+	}
+
+	cout << res << endl;
+}

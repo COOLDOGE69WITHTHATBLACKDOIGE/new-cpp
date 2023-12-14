@@ -44,4 +44,63 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+const int S = 5e5;
+
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+
+	vi pref(S,0);
+
+	vi a(300000,0);
+	vpii people(n);
+	vi compress;
+	map<int,int> coord;
+
+	forn(i,n){
+		cin >> people[i].f >> people[i].s;
+
+		compress.pb(people[i].f);
+		compress.pb(people[i].s);
+	}
+
+	sort(all(compress));
+	int t = 1;
+	int mx = 0;
+
+	coord[compress[0]] = 0;
+
+	forrange(i,1,compress.size()){
+		if(compress[i] == compress[i-1]){
+			continue;
+		}
+
+		else{
+			coord[compress[i]] = t;
+			t++;
+		}
+	}
+
+	int end = 0;
+
+	forn(i,n){
+		people[i].f = coord[people[i].f];
+		people[i].s = coord[people[i].s];
+		end = max(end,people[i].s);
+	}
+
+	forn(i,n){
+		pref[people[i].f]++;
+		pref[people[i].s]--;
+	}
+
+	int MX = 0;
+
+	forrange(i,1,pref.size()){
+		pref[i] += pref[i-1];
+		MX = max(MX,pref[i]);
+	}
+
+	cout << MX << endl;
+}

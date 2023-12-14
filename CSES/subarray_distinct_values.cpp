@@ -44,4 +44,45 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n,k;
+	cin >> n >> k;
+
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	int ptr = -1;
+	map<int,int> freq;
+	int dist = 0;
+	int res = 0;
+
+	forn(i,n){
+		while(ptr < n-1){
+			if(freq[nums[ptr+1]] == 0 && dist == k){
+				break;
+			}
+
+			else{
+				if(freq[nums[ptr+1]] == 0){
+					dist++;
+				}
+
+				ptr++;
+				freq[nums[ptr]]++;
+			}
+		}
+
+		res += ptr - i + 1;
+		freq[nums[i]]--;
+		
+		if(freq[nums[i]] == 0){
+			dist--;
+		}
+	}
+
+	cout << res << endl;
+}

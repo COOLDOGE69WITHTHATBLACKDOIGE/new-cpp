@@ -44,4 +44,29 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	int sum = 0;
+	int mx = -MOD;
+
+	forn(i,n){
+		sum += nums[i];
+
+		mx = max(mx,sum);
+
+		if(sum < 0){
+			sum = 0;
+		}
+	}
+
+	cout << mx << endl;
+}

@@ -44,4 +44,71 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO("input");
+	int n,m;
+	cin >> n >> m;
+
+	vi nums(n);
+	vi pos(n+2,0);
+
+	forn(i,n){
+		cin >> nums[i];
+
+		pos[nums[i]] = i+1;
+	}
+
+	pos[n] = n+1;
+
+
+	int t = 1;
+
+	forn(i,n){
+		if(pos[i] > pos[i+1]){
+			t++;
+		}
+	}
+
+	forn(i,m){
+		int a,b;
+		cin >> a >> b;
+
+		int k = nums[a-1],l = nums[b-1];
+		swap(nums[a-1],nums[b-1]);
+
+		if(pos[k-1] < pos[k] && pos[k-1] >= b){
+			t++;
+		}
+
+		if(pos[k-1] > pos[k] && pos[k-1] <= b){
+			t--;
+		}
+
+		if(pos[k+1] > pos[k] && pos[k+1] <= b){
+			t++;
+		}
+
+		if(pos[k+1] < pos[k] && pos[k+1] >= b){
+			t--;
+		}
+
+		if(pos[l-1] < pos[l] && pos[l-1] >= a){
+			t++;
+		}
+
+		if(pos[l-1] > pos[l] && pos[l-1] <= a){
+			t--;
+		}
+
+		if(pos[l+1] > pos[l] && pos[l+1] <= a){
+			t++;
+		}
+
+		if(pos[l+1] < pos[l] && pos[l+1] >= a){
+			t--;
+		}
+
+		pos[l] = a, pos[k] = b;
+		cout << t << endl;
+	}
+}

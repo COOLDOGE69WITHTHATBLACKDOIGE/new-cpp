@@ -44,4 +44,32 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+
+signed main(){
+	setIO();
+	int n,x;
+	cin >> x >> n;
+
+	set<int> s;
+	s.insert(0);
+	s.insert(x);
+
+	multiset<int> gap;
+	gap.insert(x);
+
+	forn(i,n){
+		int a;
+		cin >> a;
+
+		auto it = s.upper_bound(a);
+		auto it1 = it;
+		it1--;
+
+		gap.insert(a - *it1);
+		gap.insert(*it - a);
+		gap.erase(gap.find(*it - *it1));
+		s.insert(a);
+
+		cout << *gap.rbegin() << " ";
+	}
+}

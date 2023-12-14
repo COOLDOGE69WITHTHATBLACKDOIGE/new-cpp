@@ -44,4 +44,26 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+
+	vi nums(n);
+	vi pos(n+1);
+
+	forn(i,n){
+		cin >> nums[i];
+		pos[nums[i]] = i+1;
+	}
+
+	int res = 1;
+
+	forrange(i,2,n+1){
+		if(pos[i] < pos[i-1]){
+			res++;
+		}
+	}
+
+	cout << res << endl;
+}

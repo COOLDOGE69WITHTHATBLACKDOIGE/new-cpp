@@ -44,4 +44,32 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n,x;
+	cin >> n >> x;
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	vi pref(n+1,0);
+
+	forrange(i,1,n+1){
+		pref[i] = pref[i-1]+nums[i-1];
+	}
+
+	int res = 0;
+	map<int,int> s;
+	s[0]++;
+
+	forrange(i,1,n+1){
+		int target = pref[i] - x;
+		res += s[target];
+
+		s[pref[i]]++;
+	}
+
+	cout << res << endl;
+}

@@ -91,7 +91,7 @@ void erase(int val){
 }
 
 signed main(){
-	setIO("input");
+	setIO();
 	int n,k;
 	cin >> k >> n;
 
@@ -145,5 +145,6 @@ signed main(){
 	}
 
 	else{
+		cout << res << endl;
 	}
 }

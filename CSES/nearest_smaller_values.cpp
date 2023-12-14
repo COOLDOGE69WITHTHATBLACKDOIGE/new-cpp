@@ -44,4 +44,26 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	stack<pii> s;
+	s.push({0,0});
+
+	forn(i,n){
+		while(s.top().f >= nums[i]){
+			s.pop();
+		}
+
+		cout << s.top().s << " ";
+		s.push({nums[i],i+1});
+	}
+}

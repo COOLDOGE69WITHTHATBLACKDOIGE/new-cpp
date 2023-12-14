@@ -44,4 +44,31 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n,x;
+	cin >> n >> x;
+
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	map<int,int> s;
+
+	forn(i,n){
+		int a = nums[i];
+
+		if(s[x-a] != 0){
+			int ind = s[x-a];
+
+			cout << ind << " " << i+1 << endl;
+			return 0;
+		}
+
+		s[a] = i+1;
+	}
+
+	cout << "IMPOSSIBLE" << endl;
+}

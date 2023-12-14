@@ -44,4 +44,31 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+signed main(){
+	setIO();
+	int n;
+	cin >> n;
+	vi nums(n);
+
+	forn(i,n){
+		cin >> nums[i];
+	}
+
+	sort(all(nums));
+
+	int k = (n+1)/2;
+	int t = n/2;
+
+	int sum_low = 0;
+	int sum_high = 0;
+
+	forn(i,t){
+		sum_low += nums[i];
+	}
+
+	forrange(i,k,n){
+		sum_high += nums[i];
+	}
+
+	cout << sum_high - sum_low << endl;
+}
