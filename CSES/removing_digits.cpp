@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -44,28 +48,30 @@ void setIO(string name = ""){
 	}
 }
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
-	}
-	return a.s < b.s;
-}
-
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	int n;
+	cin >> n;
+
+	vi dp(n+1,MOD);
+
+	if(n < 10){
+		cout << 1 << endl;
+		return 0;
 	}
 
-	cout << res;
+	forn(i,10){ dp[i] = 1;}
+	forrange(i,10,n+1){
+		string str = to_string(i);
+		set<int> st;
+		forn(j,str.size()){
+			st.insert(str[j] - '0');
+		}
+
+		for(int k : st){
+			dp[i] = min(dp[i],dp[i-k]+1);
+		}
+	}
+
+	cout << dp[n] << endl;
 }

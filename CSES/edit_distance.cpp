@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -43,29 +47,32 @@ void setIO(string name = ""){
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
-
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
-	}
-	return a.s < b.s;
-}
+const int INF = 1e17+1;
 
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	string s1,s2;
+	cin >> s1 >> s2;
+
+	int n = s1.size(), m = s2.size();
+	vvi dp(n+1,vi(m+1,INF));
+	dp[0][0] = 0;
+
+	forrange(i,1,m+1){
+		dp[0][i] = min(dp[0][i],dp[0][i-1] + 1);
 	}
 
-	cout << res;
+	forrange(i,1,n+1){
+		dp[i][0] = min(dp[i][0],dp[i-1][0] + 1);
+	}
+
+	forrange(i,1,n+1){
+		forrange(j,1,m+1){
+			dp[i][j] = min(dp[i][j],dp[i][j-1]+1);
+			dp[i][j] = min(dp[i][j],dp[i-1][j]+1);
+			dp[i][j] = min(dp[i][j],dp[i-1][j-1]+(s1[i-1] != s2[j-1]));
+		}
+	}
+
+	cout << dp[n][m] << endl;
 }

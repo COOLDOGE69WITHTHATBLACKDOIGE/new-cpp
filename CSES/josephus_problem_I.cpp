@@ -1,8 +1,12 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
- 
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> oset;
+
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
 // #pragma GCC optimize("trapv")
@@ -44,28 +48,15 @@ void setIO(string name = ""){
 	}
 }
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
-	}
-	return a.s < b.s;
-}
-
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	int n,diff; cin >> n >> diff;
+	forrange(i,1,n+1){ oset.insert(i);}
+	int index = diff;
+	while(oset.size()){
+		index %= oset.size();
+		int del = *oset.find_by_order(index); oset.erase(del);
+		cout << del << " ";
+		index += diff;
 	}
-
-	cout << res;
 }

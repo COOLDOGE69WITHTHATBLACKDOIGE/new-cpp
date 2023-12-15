@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -44,27 +48,27 @@ void setIO(string name = ""){
 	}
 }
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
-	}
-	return a.s < b.s;
-}
-
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	int n,m,k;
+	cin >> n >> m >> k;
+
+	vi apartment_size(n);
+	vi desired_size(m);
+	forn(i,n){ cin >> apartment_size[i];}
+	forn(i,m){ cin >> desired_size[i];}
+	sort(all(apartment_size)); sort(all(desired_size));
+	int i = 0, j = 0, res = 0;
+
+	while(i < n && j < m){
+		if(abs(apartment_size[i] - desired_size[j]) <= k){ res++,i++,j++;}
+		else{
+			if(apartment_size[i] < desired_size[j]){
+				i++;
+			}
+
+			else{ j++;}
+		}
 	}
 
 	cout << res;

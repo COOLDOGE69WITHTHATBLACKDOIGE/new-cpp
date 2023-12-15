@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -34,6 +38,12 @@ using namespace __gnu_pbds;
 
 #define MOD 1000000007
 
+void input_vector(vi &a, int szze){
+	forn(i,szze){
+		cin >> a[i];
+	}
+}
+
 void setIO(string name = ""){
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
@@ -44,28 +54,33 @@ void setIO(string name = ""){
 	}
 }
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
-	}
-	return a.s < b.s;
-}
-
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	int n,m;
+	cin >> n >> m;
+
+	vi a(n); input_vector(a,n);
+	vvi dp(n+1,vi(m+2,0));
+	if(a[0] == 0){
+		forrange(i,1,m+1){ dp[1][i] = 1;}
 	}
 
+	else{ dp[1][a[0]] = 1;}
+
+	forrange(i,2,n+1){
+		if(a[i-1] == 0){
+			forrange(j,1,m+1){
+				dp[i][j] = dp[i-1][j] + dp[i-1][j-1] + dp[i-1][j+1];
+				dp[i][j] %= MOD;
+			}
+		}
+
+		else{
+			dp[i][a[i-1]] = dp[i-1][a[i-1]] + dp[i-1][a[i-1]-1] + dp[i-1][a[i-1]+1]; 
+			dp[i][a[i-1]] %= MOD;
+		}
+	}
+
+	int res = 0; forn(j,m+1){ res += dp[n][j]; res %= MOD;}
 	cout << res;
 }

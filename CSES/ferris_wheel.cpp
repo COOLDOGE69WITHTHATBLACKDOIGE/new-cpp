@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -44,28 +48,21 @@ void setIO(string name = ""){
 	}
 }
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
-	}
-	return a.s < b.s;
-}
-
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	int n,x;
+	cin >> n >> x;
+	vi a(n);
+	forn(i,n){ cin >> a[i];}
+	sort(all(a));
+	int l = 0, r = n-1, res = 0;
+	vb visited(n);
+	while(l < r){
+		if(a[l] + a[r] <= x){ visited[l] = true; visited[r] = true; res++,l++,r--;}
+		else{ r--;}
 	}
+
+	forn(i,n){ res += (visited[i] == false);}
 
 	cout << res;
 }

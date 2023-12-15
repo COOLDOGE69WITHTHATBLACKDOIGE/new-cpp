@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -44,28 +48,43 @@ void setIO(string name = ""){
 	}
 }
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
+struct Project{
+	int start,end,profit;
+};
+
+bool comp(Project &a, Project &b){
+	if(a.end == b.end){
+		return a.start < b.start;
 	}
-	return a.s < b.s;
+
+	return a.end < b.end;
 }
 
 signed main(){
-	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	setIO("input"); int n; cin >> n;
+	vector<Project> projects(n);
+	set<int> val; map<int,int> id;
+	forn(i,n){ 
+		cin >> projects[i].start >> projects[i].end >> projects[i].profit; projects[i].end++;
+		val.insert(projects[i].start); val.insert(projects[i].end);
 	}
+	sort(all(projects),comp);
+	int t = 1;
+	for(int j : val){ id[j] = t; t++;}
+	vector<pair<bool,int>> start(t+1,{false,0}); vi start_profit(t+1);
 
-	cout << res;
+    forn(i,n){
+    	projects[i].start = id[projects[i].start]; projects[i].end = id[projects[i].end];
+    	start[projects[i].start].f = true; start[projects[i].start].s = projects[i].end; start_profit[projects[i].start] = projects[i].profit;
+    }
+	vi dp(t+1,0);
+    forrange(i,1,t){
+    	if(start[i].f){
+    		dp[start[i].s] = max(dp[start[i].s],dp[i]+start_profit[i]);
+    	}
+
+    	dp[i+1] = max(dp[i+1],dp[i]);
+    }
+
+    cout << dp[t] << endl;
 }

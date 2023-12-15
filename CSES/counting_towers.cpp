@@ -1,7 +1,11 @@
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
+
+tree<int, null_type, less<int>, rb_tree_tag,
+tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -43,29 +47,45 @@ void setIO(string name = ""){
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
+const int szze = 1e6+2;
+vi dp1(szze,0);
+vi dp2(szze,0);
+int k = 1;
 
-bool comp(pii &a, pii &b){
-	if(a.s == b.s){
-		return a.f < b.f;
+void solve(){
+	int n;
+	cin >> n;
+
+	if(k >= n){
+		int res = dp1[n] + dp2[n];
+		res %= MOD;
+		cout << res << endl;
 	}
-	return a.s < b.s;
+
+	else{
+		forrange(i,k,n){
+			dp1[i+1] += 2*dp1[i];
+			dp1[i+1] += dp2[i];
+			dp2[i+1] += dp1[i];
+			dp2[i+1] += 4*dp2[i];
+
+			dp1[i+1] %= MOD; dp2[i+1] %= MOD;
+		}
+
+		int res = dp2[n] + dp1[n];
+		res %= MOD;
+		k = n;
+
+		cout << res << endl;
+	}
 }
+
 
 signed main(){
 	setIO();
-	int n,k; multiset<int> s;
-	cin >> n >> k;
-	vpii movies(n);
-	forn(i,n){ cin >> movies[i].f >> movies[i].s;}
-	sort(all(movies),comp); forn(i,k){ s.insert(0);}
-	int res = 0;
-	for(pii b : movies){
-		auto it = s.upper_bound(b.f);
-		if(it == s.begin()){ continue;}
-		it--; s.erase(s.find(*it));
-		s.insert(b.s);
-		res++;
+	int t; cin >> t;
+	dp1[1] = 1; dp2[1] = 1;
+	while(t--){
+		solve();
 	}
-
-	cout << res;
 }
