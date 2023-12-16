@@ -3,17 +3,17 @@
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
-
+ 
 tree<int, null_type, less<int>, rb_tree_tag,
 tree_order_statistics_node_update> T;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
 // #pragma GCC optimize("trapv")
-
+ 
 // #define dbg(TXTMSG) cerr << "\n" << TXTMSG
 // #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
-
+ 
 #define ld long double
 #define int long long
 #define forn(i,j) for(int i = 0; i < j; i++)
@@ -35,60 +35,73 @@ tree_order_statistics_node_update> T;
 #define qpii queue<pii>
 #define pqpii priority_queue<pii>
 #define pqi priority_queue<int>
-
+ 
 const int MOD = 1e9 + 7;
 const int INF = 1e17 + 1;
-
+ 
 void setIO(string name = ""){
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
-
+ 
 	if(!name.empty()){
 		freopen((name + ".in").c_str(), "r", stdin);
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
-
+ 
 vvi graph;
 vb visited;
 vi parent;
-vi a;
-
-vi dfs(int u){
+pii ab = {0,0};
+ 
+void dfs(int u){
 	visited[u] = true;
-
+ 
 	for(int k : graph[u]){
-		if(visited[k]){
-			int t = u;
-			while(t != k){
-				a.pb(t); t = parent[t];
+		if(k != parent[u]){
+			if(visited[k]){
+				ab = {k,u};
+				return;
 			}
-			a.pb(k);
-
-			return a;
+ 
+			else{
+				parent[k] = u; dfs(k);
+			}
 		}
-
-		else{
-			parent[k] = u;;
-			dfs(k);
-		}
-	}	
-
-	return a;
+	}
 }
-
+ 
 signed main(){
-	setIO("input"); int n,m; cin >> n >> m;
+	setIO(); int n,m; cin >> n >> m;
 	graph.resize(n+1); visited.assign(n+1,false); parent.resize(n+1);
-
+ 
 	forn(i,m){
 		int a,b; cin >> a >> b; graph[a].pb(b); graph[b].pb(a);
 	}
-
-	vi b = dfs(1);
-	if(b.empty()){ cout << "IMPOSSIBLE" << endl; return 0;}
-
-	cout << b.size() << endl;
-
-	for(int i = b.size() - 1; i >= 0; --i){ cout << b[i] << " ";}
+	forrange(i,1,n+1){
+		if(!visited[i] && (ab.f == 0) && (ab.s == 0)){
+			parent[i] = 0;
+			dfs(i);
+		}
+	}
+ 
+	if(ab.f == 0 && ab.s == 0){
+		cout << "IMPOSSIBLE" << endl;
+		return 0; 
+	}
+ 
+	int start = ab.f; int end = ab.s;
+	vi a;
+	while(start != end && start != 0){
+		a.pb(start); start = parent[start];
+	}
+	a.pb(end);
+ 
+	cout << a.size()+1 << endl;
+ 
+	for(int k : a){
+		cout << k << " ";
+	}
+ 
+	cout << ab.f;
 }
