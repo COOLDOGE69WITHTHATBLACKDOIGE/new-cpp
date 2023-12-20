@@ -7,12 +7,12 @@ using namespace __gnu_pbds;
 tree<int, null_type, less<int>, rb_tree_tag,
 tree_order_statistics_node_update> T;
  
-#define _GLIBCXX_DEBUG 1
-#define _GLIBCXX_DEBUG_PEDANTIC 1
-#pragma GCC optimize("trapv")
+// #define _GLIBCXX_DEBUG 1
+// #define _GLIBCXX_DEBUG_PEDANTIC 1
+// #pragma GCC optimize("trapv")
 
-#define dbg(TXTMSG) cerr << "\n" << TXTMSG
-#define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
+// #define dbg(TXTMSG) cerr << "\n" << TXTMSG
+// #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
 
 #define ld long double
 #define int long long
@@ -39,7 +39,7 @@ tree_order_statistics_node_update> T;
 const int MOD = 1e9 + 7;
 const int INF = 1e17 + 1;
 const int maxN = 2e5 + 1;
-const int SEG = 8e5 + 1;
+const int M = 8e5 + 5;
 
 void setIO(string name = ""){
 	ios_base::sync_with_stdio(0);
@@ -50,50 +50,38 @@ void setIO(string name = ""){
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
+int a[maxN];
+int st[4*maxN];
+int n;
 
-vi a;
-int seg[SEG];
-
-void build(int l, int r, int pos){
-	if(l == r){
-		seg[pos] = a[l];
-		return;
+void update(int idx, int val){
+	st[idx += n] = val;
+	for(idx /= 2; idx; idx /= 2){
+		st[idx] = min(st[2*idx],st[2*(idx)+1]);
 	}
-
-	int mid = (l+r)/2;
-
-	build(l,mid,2*pos);
-	build(mid+1,r,(2*pos)+1);
-
-	seg[pos] = min(seg[2*pos],seg[(2*pos)+1]);
-	dbgv(seg[pos]);
 }
 
-int query(int l, int r, int pos, int ql, int qr){
-	if(ql > r || qr < l){
-		return INF;
+int query(int left, int right){
+	int ra = INF, rb = INF;
+
+	for(left += n, right += n+1; left < right; left /= 2, right /= 2){
+		if(left & 1){ ra = min(ra,st[left++]);}
+		if(right & 1){ rb = min(rb,st[--right]);}
 	}
 
-	if((l >= ql) && (r <= qr)){
-		return seg[pos];
-	}
-
-	int mid = (l+r)/2;
-
-	return min(query(l,mid,2*pos,ql,qr),query(mid+1,r,(2*pos)+1,ql,qr));
+	return min(ra,rb);
 }
 
 signed main(){
-	setIO("input"); 
-	int t,q;
-	cin >> t >> q;
-	a.resize(t); forn(i,t){ cin >> a[i];}
-
-	build(0,t-1,0);
+	setIO(); int q; cin >> n >> q;
+	forn(i,n){ 
+		cin >> a[i];
+		update(i,a[i]);
+	}
 
 	while(q--){
-		int a,b; a--,b--;	
+		int a,b; cin >> a >> b; a--,b--;
 
-		cout << query(0,t-1,0,a,b) << endl;
+		cout << query(a,b) << endl;
 	}
 }
