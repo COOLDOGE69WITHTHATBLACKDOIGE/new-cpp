@@ -49,5 +49,68 @@ void setIO(string name = ""){
 		freopen((name + ".out").c_str(), "w", stdout);
 	}
 }
+int n,q;
 
-signed main(){}
+struct node{
+	int mx_sum, mx_left, mx_right, total_sum;
+};
+
+node seg[2*maxN];
+
+void set_node(node &a, int val){
+	a.mx_sum = val, a.mx_left = val, a.mx_right = val, a.total_sum = val;
+}
+
+int mx3(int a, int b, int c){
+	int t = max(a,b); t = max(t,c);
+	return t;
+}
+
+node combine(node &a, node &b){
+	node c;
+	c.mx_sum = mx3(a.mx_sum,b.mx_sum,a.mx_right + b.mx_left);
+	c.total_sum = a.total_sum + b.total_sum;
+	c.mx_left = max(a.mx_left,a.total_sum + b.mx_left);
+	c.mx_right = max(b.mx_right, b.total_sum + a.mx_right);
+
+	return c;
+}
+
+void update(int idx, int val){
+	idx += n;
+	set_node(seg[idx],val);
+
+	for(idx /= 2; idx; idx /= 2){
+		seg[idx] = combine(seg[2*idx],seg[2*(idx)+1]);
+	}
+}
+
+int query(int left, int right){
+	node ra, rb;
+	set_node(ra,0); set_node(rb,0);
+
+	for(left += n, right += n+1; left < right; left /= 2, right /= 2){
+		if(left & 1){
+			ra = combine(ra,seg[left++]);
+		}
+
+		if(right & 1){
+			rb = combine(seg[--right],rb);
+		}
+	}
+
+	return combine(ra,rb).mx_sum;
+}
+
+signed main(){
+	setIO(); cin >> n >> q; vi arr(n);
+	forn(i,n){
+		cin >> arr[i]; update(i,arr[i]);
+	}
+
+	while(q--){
+		int k,x; cin >> k >> x; k--; update(k,x);
+
+		cout << query(0,n-1) << endl;
+	}
+}

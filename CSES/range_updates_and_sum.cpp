@@ -50,4 +50,18 @@ void setIO(string name = ""){
 	}
 }
 
-signed main(){}
+int v[maxN];
+
+struct node{
+	int sum, add, set;
+};
+
+node seg[4*maxN];
+
+signed main(){
+	setIO("input"); int n,q;
+	cin >> n >> q;
+	forn(i,n){
+		cin >> v[i];
+	}
+}
