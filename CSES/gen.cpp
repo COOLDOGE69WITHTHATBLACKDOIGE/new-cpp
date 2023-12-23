@@ -11,18 +11,14 @@ int main(int argc, char* argv[]){
 	int q = rand(2,10);
 	cout << n << " " << q << endl;
 
-	for(int i = 0; i < n; ++i){
-		int x = rand(0,10000);
-		cout << x << " ";
+	for(int i = 2; i < n+1; ++i){
+		int p = rand(1,i-1);
+
+		cout << i << " " << p << endl;
 	}
 
-	cout << endl;
-
-	for(int i = 0; i < q; ++i){
-		int y = rand(1,2);
-		int h = rand(1,n);
-		int j = rand(h,n);
-
-		cout << y << " " << h << " " << j << endl;
+	while(q--){
+		int a = rand(1,n); int b = rand(1,n);
+		cout << a << " " << b << endl;
 	}
 }
