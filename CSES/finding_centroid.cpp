@@ -55,37 +55,33 @@ vvi graph;
 int n;
 
 void dfs(int node, int parent){
+	subtree[node] = 1;
 	for(int k : graph[node]){
 		if(k != parent){
 			dfs(k,node);
-
-			subtree[node] += subtree[k] + 1;
+			subtree[node] += subtree[k];
 		}
 	}
 }
 
-int t = n/2;
-
 int dfs2(int node, int parent){
 	for(int k : graph[node]){
 		if(k != parent){
-			if((subtree[k]) > t){
+			if(subtree[k]*2 > n){
 				return dfs2(k,node);
 			}
 		}
 	}
 
-	return node;
+	return node;	
 }
 
 signed main(){
 	setIO(); cin >> n; graph.resize(n);
 
 	forn(i,n-1){
-		int a,b; cin >> a >> b; a--,b--;
-
-		graph[a].pb(b);
-		graph[b].pb(a);
+		int a,b; cin >> a  >> b; a--, b--;
+		graph[a].pb(b); graph[b].pb(a);
 	}
 
 	dfs(0,-1);
