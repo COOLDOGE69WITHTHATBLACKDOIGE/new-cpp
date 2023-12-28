@@ -39,6 +39,7 @@ tree_order_statistics_node_update> T;
 const int MOD = 1e9 + 7;
 const int INF = 1e17 + 1;
 const int maxN = 2e5 + 1;
+const int LOG = 20;
 
 void setIO(string name = ""){
 	ios_base::sync_with_stdio(0);
@@ -50,6 +51,117 @@ void setIO(string name = ""){
 	}
 }
 
+int st[maxN];
+int et[maxN];
+int bit[maxN+2];
+int p[maxN][LOG];
+int timer = 0;
+vvi graph;
+
+void update(int idx, int val){
+	while(idx < maxN + 2){
+		bit[idx] += val;
+		idx += idx&-idx;
+	}
+}
+
+int query(int idx){
+	int res = 0;
+	while(idx > 0){
+		res += bit[idx];
+		idx -= idx&-idx;
+	}
+
+	return res;
+}
+
+void dfs(int node, int parent){
+	st[node] = ++timer;
+
+	for(int k : graph[node]){
+		if(k != parent){
+			p[k][0] = node;
+			dfs(k,node);
+		}
+	}
+
+	et[node] = timer;
+}
+
+bool ancestor(int a, int b){
+	return (st[a] < st[b] && et[a] >= et[b]);
+}
+
+int lca(int a, int b){
+	if(ancestor(a,b)){
+		return a;
+	}
+
+	else if(ancestor(b,a)){
+		return b;
+	}
+
+	for(int i = LOG; i >= 0; --i){
+		if(!ancestor(p[a][i],b)){
+			a = p[a][i];
+		}
+	}	
+
+	return p[a][0];
+}
+
 signed main(){
-	int n,q; cin >> n >> q;
+	setIO();
+	int n,q;
+	cin >> n >> q; graph.resize(n);
+
+	vi value(n);
+
+	forn(i,n){
+		cin >> value[i];
+	}
+
+	forn(i,n-1){
+		int a,b; cin >> a >> b;
+		a--,b--;
+		graph[a].pb(b); graph[b].pb(a);
+	}
+
+	dfs(0,-1);
+	p[0][0] = 0;
+
+	forrange(j,1,LOG){
+		forrange(i,1,n){
+			p[i][j] = p[p[i][j-1]][j-1];
+		}
+	}
+
+	forn(i,n){
+		update(st[i],value[i]);
+		update(et[i] + 1,-value[i]);
+	}
+
+	while(q--){
+		int type;
+		cin >> type;
+
+		if(type == 1){
+			int node,x; cin >> node >> x;
+			node--;
+
+			update(st[node],-value[node]);
+			update(et[node]+1,value[node]);
+
+			value[node] = x;
+
+			update(st[node],value[node]);
+			update(et[node]+1,-value[node]);
+		}
+
+		else{
+			int node; cin >> node; node--;
+
+			cout << query(st[node]) << endl;
+		}
+	}
 }

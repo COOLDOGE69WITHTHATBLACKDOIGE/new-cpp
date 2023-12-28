@@ -72,23 +72,58 @@ int find_centroid(int sz, int node, int parent){
 	processed[node] = true;
 	return node;
 }
+ 
+void cnt_res(int node, int parent, bool t, int depth){
+	if(depth > k){
+		return;
+	}
 
-void cnt(int node)
+	if(t){
+		freq[depth]++;
+	}
 
+	else{
+		res += freq[k-depth];
+	}
+ 
+	for(int yu : graph[node]){
+		if(yu != parent && !processed[yu]){
+			cnt_res(yu,node,t,depth+1);
+		}
+	}
+}
+ 
 void centroid_decomp(int node){
 	dfs(node,-1);
-	int jy = subtree[node]/2;
-	int centroid = find_centroid(jy,node,-1);
+	int ty = subtree[node]/2;
+	int centroid = find_centroid(ty,node,-1);
 
-	for(int k : graph[centroid]){
-		if(!processed[k]){
-			centroid_decomp(k);
+	freq[0] = 1;
+
+	for(int yu : graph[centroid]){
+		if(!processed[yu]){
+			cnt_res(yu,centroid,false,1);
+			cnt_res(yu,centroid,true,1);
+		}
+	}
+
+	forn(i,n+1){
+		if(freq[i] == 0){
+			break;
+		}
+
+		freq[i] = 0;
+	}
+ 
+	for(int yu : graph[centroid]){
+		if(!processed[yu]){
+			centroid_decomp(yu);
 		}
 	}
 }
  
 signed main(){
-	setIO("input");
+	setIO();
 	cin >> n >> k;
 	graph.resize(n);
  
@@ -98,8 +133,7 @@ signed main(){
 		graph[a].pb(b);
 		graph[b].pb(a);
 	}
- 
-	freq[0] = 1;
+
 	centroid_decomp(0);
  
 	cout << res << endl;

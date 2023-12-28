@@ -2,12 +2,12 @@
 typedef long long ll;
 using namespace std;
 
-int n, k;
+int n, a, b;
 vector<int> graph[200001];
 int subtree[200001];
 
-ll ans = 0;
-int cnt[200001]{1}, mx_depth;
+ll ans = 0, bit[200001];
+int mx_depth;
 bool processed[200001];
 
 int get_subtree_sizes(int node, int parent = 0) {
@@ -25,11 +25,22 @@ int get_centroid(int desired, int node, int parent = 0) {
 	return node;
 }
 
+void update(int pos, ll val) {
+	for (pos++; pos <= n; pos += pos & -pos) bit[pos] += val;
+}
+
+ll query(int l, int r) {
+	ll ans = 0;
+	for (r++; r; r -= r & -r) ans += bit[r];
+	for (; l; l -= l & -l) ans -= bit[l];
+	return ans;
+}
+
 void get_cnt(int node, int parent, bool filling, int depth = 1) {
-	if (depth > k) return;
+	if (depth > b) return;
 	mx_depth = max(mx_depth, depth);
-	if (filling) cnt[depth]++;
-	else ans += cnt[k - depth];
+	if (filling) update(depth, 1);
+	else ans += query(max(0, a - depth), b - depth);
 	for (int i : graph[node])
 		if (!processed[i] && i != parent) get_cnt(i, node, filling, depth + 1);
 }
@@ -43,20 +54,21 @@ void centroid_decomp(int node = 1) {
 			get_cnt(i, centroid, false);
 			get_cnt(i, centroid, true);
 		}
-	fill(cnt + 1, cnt + mx_depth + 1, 0);
+	for (int i = 1; i <= mx_depth; i++) update(i, -query(i, i));
 	for (int i : graph[centroid])
 		if (!processed[i]) centroid_decomp(i);
 }
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	cin >> n >> k;
+	cin >> n >> a >> b;
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
 		graph[u].push_back(v);
 		graph[v].push_back(u);
 	}
+	update(0, 1);
 	centroid_decomp();
 	cout << ans;
 	return 0;
