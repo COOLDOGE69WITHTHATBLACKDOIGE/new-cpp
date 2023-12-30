@@ -50,46 +50,42 @@ void setIO(string name = ""){
 	}
 }
 
+int dp[5001][5001];
+int ans[5001][5001];
+
 signed main(){
-	setIO("input");
+	setIO();
+
+	int n;
+	cin >> n;
+	vi a(n);
+
+	forn(i,n){
+		cin >> a[i];
+	}
+	forn(i,n){
+		dp[i][i] = a[i];
+		ans[i][i] = a[i];
+	}
+
+	forrange(len,2,n+1){
+		forn(l,n-len+1){
+			int r = l + len - 1;
+			dp[l][r] = dp[l+1][r] ^ dp[l][r-1];
+
+			ans[l][r] = max(dp[l][r],ans[l+1][r]);
+			ans[l][r] = max(ans[l][r],ans[l][r-1]); 
+		}
+	}
+
 	int q;
 	cin >> q;
 
 	while(q--){
-		int a,b; cin >> a >> b;
+		int l,r;
+		cin >> l >> r;
+		l--,r--;
 
-		cout << (a ^ b) << endl;
+		cout << ans[l][r] << endl;
 	}
-
-	// int n;
-	// cin >> n;
-	// vi a(n);
-
-	// forn(i,n){
-	// 	cin >> a[i];
-	// }
-
-	// int f[n][n];
-
-	// forn(i,n){
-	// 	f[i][i] = a[i];
-	// }
-
-	// forrange(len,2,n+1){
-	// 	forn(l,n-len+1){
-	// 		int r = l + len - 1;
-	// 		f[l][r] = f[l+1][r] ^ f[l][r-1];
-	// 	}
-	// }
-
-	// int q;
-	// cin >> q;
-
-	// while(q--){
-	// 	int l,r;
-	// 	cin >> l >> r;
-	// 	l--,r--;
-
-	// 	cout << f[l][r] << endl;
-	// }
 }

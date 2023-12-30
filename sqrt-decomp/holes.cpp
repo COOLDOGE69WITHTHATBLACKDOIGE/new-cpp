@@ -1,9 +1,6 @@
 #include<bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
 using namespace std;
-using namespace __gnu_pbds;
 
-#pragma GCC optimize("O3")
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
 // #pragma GCC optimize("trapv")
@@ -12,7 +9,7 @@ using namespace __gnu_pbds;
 // #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
 
 #define ld long double
-#define int long long
+#define ll long long
 #define forn(i,j) for(int i = 0; i < j; i++)
 #define forrange(i,j,k) for(int i = j; i < k; ++i)
 #define rof(i,j) rof(int i = j; i >= 0; --i)

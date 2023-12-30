@@ -1,14 +1,12 @@
 #include<bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
 using namespace std;
-using namespace __gnu_pbds;
  
-#define _GLIBCXX_DEBUG 1
-#define _GLIBCXX_DEBUG_PEDANTIC 1
-#pragma GCC optimize("trapv")
+// #define _GLIBCXX_DEBUG 1
+// #define _GLIBCXX_DEBUG_PEDANTIC 1
+// #pragma GCC optimize("trapv")
 
-#define dbg(TXTMSG) cerr << "\n" << TXTMSG
-#define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
+// #define dbg(TXTMSG) cerr << "\n" << TXTMSG
+// #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
 
 #define ld long double
 #define int long long
