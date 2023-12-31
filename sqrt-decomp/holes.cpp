@@ -46,7 +46,7 @@ struct Point{
 	int next,steps,power;
 };
 
-int32_t main(){
+int main(){
 	setIO();
 
 	int n,m;
