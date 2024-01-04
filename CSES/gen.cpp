@@ -7,18 +7,15 @@ int rand(int a, int b){
 
 int main(int argc, char* argv[]){
 	srand(atoi(argv[1]));
-	int n = rand(2,10);
-	int q = rand(2,10);
-	cout << n << " " << q << endl;
 
-	for(int i = 2; i < n+1; ++i){
-		int p = rand(1,i-1);
+	int n = rand(39,40);
+	int x = rand(1,24);
 
-		cout << i << " " << p << endl;
-	}
+	cout << n << " " << x << endl;
 
-	while(q--){
-		int a = rand(1,n); int b = rand(1,n);
-		cout << a << " " << b << endl;
+	for(int i = 0; i < n; ++i){
+		int a = rand(1,20);
+
+		cout << a << " ";
 	}
 }
