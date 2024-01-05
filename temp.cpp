@@ -1,11 +1,11 @@
 #include<bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
-using namespace __gnu_pbds;
 
-tree<int, null_type, less<int>, rb_tree_tag,
-tree_order_statistics_node_update> T;
+// #include <ext/pb_ds/assoc_container.hpp>
+// using namespace __gnu_pbds;
+// template <class T>
+// using oset =
+//     tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
  
 // #define _GLIBCXX_DEBUG 1
 // #define _GLIBCXX_DEBUG_PEDANTIC 1
@@ -14,11 +14,9 @@ tree_order_statistics_node_update> T;
 // #define dbg(TXTMSG) cerr << "\n" << TXTMSG
 // #define dbgv(VARN) cerr << "\n" << #VARN << " = "<< VARN << ", line: " << __LINE__ << "\n"
 
-#define ld long double
 #define int long long
 #define forn(i,j) for(int i = 0; i < j; i++)
 #define forrange(i,j,k) for(int i = j; i < k; ++i)
-#define rof(i,j) rof(int i = j; i >= 0; --i)
 #define pii pair<int,int>
 #define vi vector<int>
 #define vpii vector<pii>
@@ -26,15 +24,8 @@ tree_order_statistics_node_update> T;
 #define vvpii vector<vector<pii>>
 #define vb vector<bool>
 #define pb push_back
-#define p push
 #define f first
 #define s second
-#define all(x) x.begin(), x.end()
-#define eb emplace_back
-#define qi queue<int>
-#define qpii queue<pii>
-#define pqpii priority_queue<pii>
-#define pqi priority_queue<int>
 
 const int MOD = 1e9 + 7;
 const int INF = 1e17 + 1;

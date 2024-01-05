@@ -38,7 +38,7 @@ tree_order_statistics_node_update> T;
 
 const int MOD = 1e9 + 7;
 const int INF = 1e17 + 1;
-const int maxN = 2e5 + 1;
+const int maxN = 5e4 + 1;
 
 void setIO(string name = ""){
 	ios_base::sync_with_stdio(0);
@@ -50,7 +50,7 @@ void setIO(string name = ""){
 	}
 }
 
-vi dp(maxN,1);
+bitset<maxN> dp[maxN];
 int indegree[maxN];
 
 signed main(){
@@ -65,29 +65,35 @@ signed main(){
 		cin >> a >> b;
 		a--,b--;
 
-		graph[a].pb(b);
+		graph[b].pb(a);
+		indegree[a]++;
 	}
 
+	queue<int> q;
+
 	forn(i,n){
-		stack<int> st;
-		st.push(i);
-		vb visited(n);
+		if(indegree[i] == 0){
+			dp[i].set(i);
+			q.push(i);
+		}
+	}
 
-		while(!st.empty()){
-			int node = st.top();
-			st.pop();
-			visited[node] = true;
+	while(!q.empty()){
+		int node = q.front();
+		q.pop();
 
-			for(int k : graph[node]){
-				if(!visited[k]){
-					dp[i]++;
-					st.push(k);
-				}
+		for(int k : graph[node]){
+			indegree[k]--;
+			dp[k] |= dp[node];
+
+			if(indegree[k] == 0){
+				dp[k].set(k);
+				q.push(k);
 			}
 		}
 	}
 
 	forn(i,n){
-		cout << dp[i] << " ";
+		cout << dp[i].count() << " ";
 	}
 }
